@@ -1,0 +1,27 @@
+# Binaries
+**/.bin/
+**/.bin-int/
+
+# @Note: When assets were inside the bin folder we used !/bin/assets
+
+# Visual Studio files and folder 
+**/.vs/
+**/.vscode/
+**/.project-files/
+**.code-workspace
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.sln.DotSettings.user
+**.sln.DotSettings
+
+# Rider files and folder
+.idea/
+
+# vscode files and folder
+# .vscode/
+# **.code-workspace
+
+# imgui
+imgui.ini
