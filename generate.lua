@@ -172,7 +172,7 @@ end
 ---------------- WORKSPACE ------------------
 ---------------------------------------------
 
-workspace "cpp-template"
+workspace "cpp-core"
     location ".project-files"
     architecture "x64"
     configurations { "debug", "release", "dist" }
