@@ -4,7 +4,7 @@ fn main() -> i32 {
 
     app_init();
 
-    // Anti-clock wise Quad Vertices.
+    // Counter-clock wise Quad Vertices.
     constexpr f32 QUAD_VTS[] = {
         -0.5f, -0.5f, // Vertex 0. Bottom-left. 
         +0.5f, -0.5f, // Vertex 1. Bottom-right.
