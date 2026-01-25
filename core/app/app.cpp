@@ -1,10 +1,8 @@
 #include "app.h"
+#include "os_core.h"
+#include "imgui.h"
 
 #if defined(GAME_DEBUG) && defined(GAME_GL)
-
-#include "os_core.h"
-#include "os_gl.h"
-#include "imgui.h"
 
 // @Note: This is not in the GL context because it's platform independent. (I guess)
 
