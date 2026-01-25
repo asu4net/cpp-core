@@ -64,7 +64,7 @@ FOR_GL_FUNCTIONS(DO_DECLARATIONS)
 
 // @Note: Helper functions
 
-inline fn glCompileShaderWithPrefix(std::string_view source, std::string_view prefix, GLenum type) -> GLuint {
+inline fn os_compile_gl_shader_with_prefix(std::string_view source, std::string_view prefix, GLenum type) -> GLuint {
     GLuint shader = glCreateShader(type);
 
     cstring sources[2];
@@ -96,7 +96,7 @@ inline fn glCompileShaderWithPrefix(std::string_view source, std::string_view pr
     return shader;
 }
 
-inline fn glCreateProgramFromSource(std::string_view source) -> GLuint {
+inline fn os_create_gl_program(std::string_view source) -> GLuint {
     if (source.empty())
     {
         dbg_log("Error! The shader source cannot be empty!");
@@ -107,7 +107,7 @@ inline fn glCreateProgramFromSource(std::string_view source) -> GLuint {
         "#version 460 core \n"
         "#define VERTEX_SHADER \n";
     
-    GLuint vert = glCompileShaderWithPrefix(source, vert_prefix, GL_VERTEX_SHADER);
+    GLuint vert = os_compile_gl_shader_with_prefix(source, vert_prefix, GL_VERTEX_SHADER);
 
     if (vert == 0u)
     {
@@ -119,7 +119,7 @@ inline fn glCreateProgramFromSource(std::string_view source) -> GLuint {
         "#version 460 core \n"
         "#define FRAGMENT_SHADER \n";
 
-    GLuint frag = glCompileShaderWithPrefix(source, frag_prefix, GL_FRAGMENT_SHADER);
+    GLuint frag = os_compile_gl_shader_with_prefix(source, frag_prefix, GL_FRAGMENT_SHADER);
 
     if (frag == 0u)
     {
