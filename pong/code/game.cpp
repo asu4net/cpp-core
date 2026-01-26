@@ -141,12 +141,12 @@ fn test_ball_point(Game_State& gs) {
     i32 points = 0;
 
     if (right >= player_r_start_x(gs)) {
-        gs.rPoints += 1;
-        points = gs.rPoints;
-    }
-    if (left <= player_l_start_x(gs)) {
         gs.lPoints += 1;
         points = gs.lPoints;
+    }
+    if (left <= player_l_start_x(gs)) {
+        gs.rPoints += 1;
+        points = gs.rPoints;
     }
     
     if (points > 10) {
