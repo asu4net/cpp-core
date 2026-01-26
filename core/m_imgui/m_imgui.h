@@ -6,6 +6,7 @@ fn imgui_done() -> void;
 fn imgui_frame_init() -> void;
 fn imgui_frame_done() -> void;
 fn imgui_is_init() -> bool;
+fn imgui_draw_text(Vec2 pos, f32 font_size, Vec4 color, cstring fmt, ...) -> void;
 
 using Draw_ImGui_Fn = void(*)();
 

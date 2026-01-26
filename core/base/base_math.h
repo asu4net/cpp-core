@@ -415,3 +415,13 @@ public:
 private:
     Mat4 m_matrix;
 };
+
+// @Note: Axis Aligned Bounding Box.
+struct AABB {
+    f32 x = 0.0f;
+    f32 y = 0.0f;
+    f32 half_w = 0.0f;
+    f32 half_h = 0.0f;
+
+    static fn overlap(const AABB& a, const AABB& b) -> bool;
+};

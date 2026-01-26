@@ -697,3 +697,8 @@ fn Camera::update_matrix(i32 viewport_x, i32 viewport_y) -> void
     Mat4 v = Mat4::view(pos, Quat::from_euler_angles(rot.radians()));
     m_matrix = Mat4::transpose(p * v);
 }
+
+fn AABB::overlap(const AABB& a, const AABB& b) -> bool {
+    return (std::abs(a.x - b.x) <= (a.half_w + b.half_w)) &&
+           (std::abs(a.y - b.y) <= (a.half_h + b.half_h));
+}

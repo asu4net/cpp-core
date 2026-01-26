@@ -58,6 +58,25 @@ fn imgui_is_init() -> bool {
     return g_imgui_is_init;
 }
 
+fn imgui_draw_text(Vec2 pos, f32 font_size, Vec4 color, cstring fmt, ...) -> void {
+
+    va_list args;
+    va_start(args, fmt);
+    char buffer[300];
+    vsprintf(buffer, fmt, args);
+
+    ImGuiViewport* vp = ImGui::GetMainViewport();
+    ImDrawList* dl = ImGui::GetForegroundDrawList();
+    dl->AddText(
+        ImGui::GetFont(),
+        font_size,
+        ImVec2(vp->Pos.x + pos.x, vp->Pos.y + pos.y),
+        IM_COL32(color.x * 255, color.y * 255, color.z * 255, color.w * 255),
+        buffer
+    );
+    va_end(args);
+}
+
 fn imgui_draw_frame(Draw_ImGui_Fn draw) -> void {
 
     if (!g_imgui_is_init) {

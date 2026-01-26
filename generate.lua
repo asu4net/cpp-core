@@ -176,7 +176,7 @@ workspace "cpp-core"
     location ".project-files"
     architecture "x64"
     configurations { "debug", "release", "dist" }
-    startproject "sandbox"
+    startproject "pong"
 
 ---------------------------------------------
 -------------- PROJECT IMGUI ----------------
@@ -224,3 +224,4 @@ prj_lib "core"
 ---------------------------------------------
 
 prj_game "sandbox"
+prj_game "pong"

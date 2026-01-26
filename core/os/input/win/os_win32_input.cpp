@@ -228,6 +228,9 @@ fn CALLBACK Win32_Input::process_events(HWND hWnd, UINT msg, WPARAM wParam, LPAR
             ev.type = Input_Event::Quit;
         }
         break;
+        case WM_KILLFOCUS:
+            memset(g_key_down_table, 0, sizeof(g_key_down_table));
+        break;
     }
 
     return DefWindowProc(hWnd, msg, wParam, lParam);
