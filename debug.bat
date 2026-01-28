@@ -1,0 +1,1 @@
+call raddbg --auto_run --quit_after_success

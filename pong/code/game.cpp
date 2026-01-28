@@ -174,7 +174,7 @@ fn test_ball_player(Game_State& gs, Player& p) {
     float offset = b.box.y - p.box.y / p.box.half_h;
 
     Vec2 dir;
-    dir.x = (b.vel.x > 0) ? -1.0 : 1.0;
+    dir.x = (b.vel.x > 0) ? -1.0f : 1.0f;
     dir.y = offset;
 
     dir = dir.normalized();
@@ -262,7 +262,7 @@ fn main() -> i32 {
         imgui_frame_init();
         {
             if (!gs.started) {
-                imgui_draw_text({ 1270.0f / 2.85f, 720.0f / 2.6 }, 64.0f, Color.White, "Press Space");
+                imgui_draw_text({ 1270.0f / 2.85f, 720.0f / 2.6f }, 64.0f, Color.White, "Press Space");
                 if (os_key_down(Key_Code::Space)) {
                     gs.started = true;
                 }

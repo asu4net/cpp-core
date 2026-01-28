@@ -6,22 +6,13 @@
 
 # Visual Studio files and folder 
 **/.vs/
-**/.vscode/
 **/.project-files/
-**.code-workspace
-**.sln
-**.vcxproj
-**.vcxproj.filters
-**.vcxproj.user
-**.sln.DotSettings.user
-**.sln.DotSettings
+
+# Raddbg
+**/.raddbg/**
 
 # Rider files and folder
 .idea/
-
-# vscode files and folder
-# .vscode/
-# **.code-workspace
 
 # imgui
 imgui.ini

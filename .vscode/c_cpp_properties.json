@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "GAME_DEBUG",
+                "GAME_GL", 
+                "GAME_WIN",
+                "WIN32",
+                "_WINDOWS",
+                "_UNICODE",
+                "UNICODE"
+            ],
+            "compilerPath": "cl.exe",
+            "intelliSenseMode": "msvc-x64",
+            "forcedInclude": [
+                "${workspaceFolder}/core/core_pch.h",
+                "${workspaceFolder}/sandbox/code/game_pch.h",
+                "${workspaceFolder}/pong/code/game_pch.h"
+            ]
+        }
+    ],
+    "version": 4
+}

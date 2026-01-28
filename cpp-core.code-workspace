@@ -1,0 +1,58 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"tasks": {
+        "version": "2.0.0",
+        "options": {
+            "cwd": "${workspaceFolder}" 
+        },
+        "presentation": {
+            "reveal": "always",
+            "clear": true
+        },
+        "tasks": [
+			{
+                "label": "prepare_compiler",
+				"type": "shell",
+                "command": "cmd.exe",
+				"args": ["/k", "vcvarsall x64"],
+				"runOptions": {
+					"runOn": "folderOpen"
+				},
+				"presentation": {
+					"close": false
+				}
+			},
+			{
+                "label": "debug",
+                "command": "debug",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				}
+			}
+        ]
+    },
+	"settings": {
+		"files.associations": {
+			"*.rh": "cpp",
+			"xiosbase": "cpp",
+			"xlocinfo": "cpp",
+			"xstring": "cpp",
+			"memory": "cpp"
+		},
+		"search.exclude": {
+			"**/.vs": true,
+			"**/bin": true,
+			"**/bin-int": true,
+			"**/*.sln": true,
+			"**/*.vcxproj": true,
+			"**/*.vcxproj.filters": true,
+			"**/*.user": true,
+			"**/*.exe": true,
+		},
+	}
+}
