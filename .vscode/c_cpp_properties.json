@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/3rd/box2d/include",
+                "${workspaceFolder}/3rd/box2d/src"
             ],
             "defines": [
                 "GAME_DEBUG",

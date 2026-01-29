@@ -17,6 +17,7 @@ loc_int   = loc_this .. ".bin-int/%{prj.name}/%{cfg.buildcfg}"
 loc_core  = loc_this .. "core/" 
 loc_3rd   = loc_this .. "3rd/"
 loc_imgui = loc_3rd  .. "imgui/"
+loc_box2d = loc_3rd  .. "box2d/"
 
 -- @Note: Include dirs:
 
@@ -67,6 +68,7 @@ fls_core = {
 lnk_game_base = {
     "imgui",
     "core",
+    "box2d",
 }
 
 lnk_game_win = {
@@ -151,6 +153,7 @@ function prj_game(name)
 
     includedirs { 
         inc_game_base, 
+        loc_box2d .. "include",
         loc .. "/code/**",
     }
 
@@ -178,36 +181,58 @@ workspace "cpp-core"
     configurations { "debug", "release", "dist" }
     startproject "sandbox"
 
+group "3rd"
+
 ---------------------------------------------
 -------------- PROJECT IMGUI ----------------
 ---------------------------------------------
 
-group "3rd"
-    prj_lib "imgui"
-        config_base()
-        includedirs (inc_imgui)
-        files { 
-            loc_imgui .. "src/**.h", 
-            loc_imgui .. "src/**.cpp", 
+prj_lib "imgui"
+    config_base()
+    includedirs (inc_imgui)
+    files { 
+        loc_imgui .. "src/**.h", 
+        loc_imgui .. "src/**.cpp", 
+    }
+    
+    removefiles (loc_imgui .. "src/backends/**")
+    
+    filter "system:windows"
+        files 
+        { 
+            loc_imgui .. "src/backends/imgui_impl_opengl3_loader.h", 
+            loc_imgui .. "src/backends/imgui_impl_opengl3.h", 
+            loc_imgui .. "src/backends/imgui_impl_opengl3.cpp", 
+            loc_imgui .. "src/backends/imgui_impl_win32.h", 
+            loc_imgui .. "src/backends/imgui_impl_win32.cpp" 
         }
-        
-        removefiles (loc_imgui .. "src/backends/**")
-        
-        filter "system:windows"
-            files 
-            { 
-                loc_imgui .. "src/backends/imgui_impl_opengl3_loader.h", 
-                loc_imgui .. "src/backends/imgui_impl_opengl3.h", 
-                loc_imgui .. "src/backends/imgui_impl_opengl3.cpp", 
-                loc_imgui .. "src/backends/imgui_impl_win32.h", 
-                loc_imgui .. "src/backends/imgui_impl_win32.cpp" 
-            }
-        filter{}
-group ""
+    filter{}
+
+---------------------------------------------
+-------------- PROJECT BOX2D ----------------
+---------------------------------------------
+
+prj_lib "box2d"
+    language "C"
+    cdialect "C17"    
+    config_base()
+    includedirs {
+        loc_box2d .. "include",
+        loc_box2d .. "src"
+    }
+    files {
+        loc_box2d .. "include/**.h",
+        loc_box2d .. "src/**.h",
+        loc_box2d .. "src/**.c"
+    }
+    buildoptions {
+        "/experimental:c11atomics",
+    }
 
 ---------------------------------------------
 -------------- PROJECT CORE -----------------
 ---------------------------------------------
+group ""
 
 prj_lib "core"
     -- @Note: PCH config
