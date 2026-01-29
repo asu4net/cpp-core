@@ -84,7 +84,7 @@ static auto resolve_gl_functions()
 
 Win32_GL_Context::Win32_GL_Context(HWND window_handle)
 {
-	if (!dbg_ensure(window_handle, "This is not a valid window handle!\n")) return;
+	if (!ensuref(window_handle, "This is not a valid window handle!\n")) return;
 
     resolve_wgl_functions();
 	
@@ -131,14 +131,14 @@ Win32_GL_Context::Win32_GL_Context(HWND window_handle)
 	
 	resolve_gl_functions();
 
-    dbg_log("Win32 OpenGL Context created!");
+    logf("Win32 OpenGL Context created!");
 }
 
 Win32_GL_Context::~Win32_GL_Context()
 {
 	wglMakeCurrent(NULL, NULL);
 	wglDeleteContext(m_context);
-    dbg_log("Win32 OpenGL Context destroyed!");
+    logf("Win32 OpenGL Context destroyed!");
 }
 
 auto Win32_GL_Context::swap_interval(i32 interval) -> void

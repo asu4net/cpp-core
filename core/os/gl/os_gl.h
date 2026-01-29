@@ -89,7 +89,7 @@ inline fn os_compile_gl_shader_with_prefix(std::string_view source, std::string_
         GLchar log_buffer[LOG_BUFFER_SIZE];
         GLsizei log_lenght;
         glGetShaderInfoLog(shader, LOG_BUFFER_SIZE, &log_lenght, log_buffer);
-        dbg_log("Error compiling the program.\n%s", std::string_view(log_buffer, log_lenght).data());
+        logf("Error compiling the program.\n%s", std::string_view(log_buffer, log_lenght).data());
         return 0u;
     }
 
@@ -99,7 +99,7 @@ inline fn os_compile_gl_shader_with_prefix(std::string_view source, std::string_
 inline fn os_create_gl_program(std::string_view source) -> GLuint {
     if (source.empty())
     {
-        dbg_log("Error! The shader source cannot be empty!");
+        logf("Error! The shader source cannot be empty!");
         return 0u;
     }
     
@@ -111,7 +111,7 @@ inline fn os_create_gl_program(std::string_view source) -> GLuint {
 
     if (vert == 0u)
     {
-        dbg_log("Error compiling the vertex shader.");
+        logf("Error compiling the vertex shader.");
         return 0u;
     }
 
@@ -123,7 +123,7 @@ inline fn os_create_gl_program(std::string_view source) -> GLuint {
 
     if (frag == 0u)
     {
-        dbg_log("Error compiling the fragment shader.");
+        logf("Error compiling the fragment shader.");
         return 0u;
     }
     
@@ -148,7 +148,7 @@ inline fn os_create_gl_program(std::string_view source) -> GLuint {
         GLchar log_buffer[LOG_BUFFER_SIZE];
         GLsizei log_lenght;
         glGetProgramInfoLog(prog, LOG_BUFFER_SIZE, &log_lenght, log_buffer);
-        dbg_log("Error linking the program.\n%s", std::string_view(log_buffer, log_lenght).data());
+        logf("Error linking the program.\n%s", std::string_view(log_buffer, log_lenght).data());
         return 0u;
     }
     

@@ -18,11 +18,11 @@ fn audio_init() -> bool {
         audio_done();
     }
 
-    dbg_log("Audio System created!");
+    logf("Audio System created!");
     auto result = ma_engine_init(nullptr, &g_audio.engine);
     if (result != MA_SUCCESS) 
     {
-        dbg_check(false, "Error! Failed to initialize the audio engine!");
+        checkf(false, "Error! Failed to initialize the audio engine!");
         return false;
     }
     g_audio.inited = true;
@@ -31,7 +31,7 @@ fn audio_init() -> bool {
 
 fn audio_done() -> void {
     if (g_audio.inited) {
-        dbg_log("Audio System destroyed!");
+        logf("Audio System destroyed!");
         ma_engine_uninit(&g_audio.engine);
         g_audio.inited = false;
     }
@@ -42,7 +42,7 @@ fn audio_load(const std::string& filename) -> Audio_Handle {\
     auto result = ma_sound_init_from_file(&g_audio.engine, filename.c_str(), 0, nullptr, nullptr, sound);
     if (result != MA_SUCCESS)
     {
-        dbg_check(false, "Error! Failed to load the sound!");
+        checkf(false, "Error! Failed to load the sound!");
         return {};
     }
     return handle;

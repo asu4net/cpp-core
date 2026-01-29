@@ -1,5 +1,5 @@
 #include "app.h"
-#include "gpu_scene2d.h"
+#include "gl_quad.h"
 
 struct Ball {
     AABB box;
@@ -183,7 +183,7 @@ fn test_ball_player(Game_State& gs, Player& p) {
 } 
 
 fn draw_box(const AABB& box) {
-    gpu_draw_quad(
+    gl_quad_draw(
           { box.x, box.y, 0.0f }
         , { F32.Zero } 
         , { box.half_w * 2.0f, box.half_h * 2.0f, 1.0f }
@@ -197,7 +197,7 @@ fn main() -> i32 {
     ds.window.title = L"Pong";
     app_init(ds);
 
-    gpu_scene2d_init();
+    gl_quad_buffer_init();
 
     Game_State gs;
     gs.blip = audio_load("pong_blip.wav");
@@ -243,9 +243,10 @@ fn main() -> i32 {
 
         test_ball_walls(gs);
 
-        // Draw.
-        gpu_clear_back_buffer();
+        // Clear the back buffer.
+        glClear(GL_COLOR_BUFFER_BIT);
         
+        // Draw.
         if (gs.started) {
             draw_box(pL.box);
             draw_box(pR.box);
@@ -281,6 +282,6 @@ fn main() -> i32 {
 
     audio_free(gs.blip);
     audio_free(gs.blip2);
-    gpu_scene2d_done();
+    gl_quad_buffer_done();
     app_done();
 }

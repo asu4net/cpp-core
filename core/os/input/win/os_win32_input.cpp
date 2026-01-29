@@ -240,10 +240,10 @@ fn CALLBACK Win32_Input::process_events(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 Win32_Input::Win32_Input(const Input_Desc& ds)
 {
-    if (dbg_ensure(!g_input_created, "We don't support multiple instances for the Input class.\n"))
+    if (ensuref(!g_input_created, "We don't support multiple instances for the Input class.\n"))
     {
         g_input_created = true;
-        dbg_log("Win32 Input created!");
+        logf("Win32 Input created!");
     }
 }
 
@@ -253,7 +253,7 @@ Win32_Input::~Win32_Input()
     {
         g_input_created = false;
     }
-    dbg_log("Win32 Input destroyed!");
+    logf("Win32 Input destroyed!");
 }
 
 auto Win32_Input::poll_events() const -> void

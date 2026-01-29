@@ -1,36 +1,12 @@
-#include "load_model.h"
+#include "io_model.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-// @Note: Attrib layout:
-
-/*
-   Float arrays:
-
-   attrib.vertices = [
-       x0, y0, z0,
-       x1, y1, z1,
-       x2, y2, z2,
-       ...
-   ];
-   attrib.texcoords = [
-        u0, v0,
-        u1, v1,
-        u2, v2,
-        ...
-   ];
-    attrib.normals = [
-        nx0, ny0, nz0,
-        nx1, ny1, nz1,
-        ...
-    ];
-*/
-
-Model::Model(std::string_view filename, bool normals_as_colors)
-{
-    if (filename.empty())
-    return;
+fn io_model_load(std::string_view filename, IO_Model* model) -> bool {
+    if (filename.empty()) {
+        return false;
+    }
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -39,8 +15,8 @@ Model::Model(std::string_view filename, bool normals_as_colors)
 
     std::filesystem::path abs_path = std::filesystem::absolute(filename);
     std::filesystem::path dir_path = abs_path.parent_path();
-    m_dirpath = dir_path.string();
-    m_name = abs_path.stem().string();
+    model->dirpath = dir_path.string();
+    model->name = abs_path.stem().string();
 
     bool ok = tinyobj::LoadObj(
         &attrib,
@@ -54,21 +30,21 @@ Model::Model(std::string_view filename, bool normals_as_colors)
 
     if (!ok)
     {
-        dbg_check(false, "Mesh could not be loaded!\n");
-        return;
+        logf(false, "Error! Mesh could not be loaded!\n");
+        return false;
     }
 
-    m_vertices.reserve(attrib.vertices.size() / 3);
-    m_indices.reserve(1024);
+    model->vertices.reserve(attrib.vertices.size() / 3);
+    model->elems.reserve(1024);
 
     u64 it_index = 0; for (const auto& shape: shapes)
     {
-        u32 index_offset = static_cast<u32>(m_indices.size());
+        u32 index_offset = static_cast<u32>(model->elems.size());
         u32 index_count = 0;
         
         for (const auto& idx : shape.mesh.indices)
         {
-            Vertex& v = m_vertices.emplace_back();
+            IO_Model_VTX& v = model->vertices.emplace_back();
 
             v.pos.x = attrib.vertices[3 * idx.vertex_index + 0];
             v.pos.y = attrib.vertices[3 * idx.vertex_index + 1];
@@ -84,7 +60,7 @@ Model::Model(std::string_view filename, bool normals_as_colors)
             v.normal.y = attrib.normals[3 * idx.normal_index + 1];
             v.normal.z = attrib.normals[3 * idx.normal_index + 2];
 
-            if (normals_as_colors)
+            if (model->normals_as_colors)
             {
                 v.color.x = v.normal.x;
                 v.color.y = v.normal.y;
@@ -96,11 +72,11 @@ Model::Model(std::string_view filename, bool normals_as_colors)
                v.color = Color.White;
             }
             
-            m_indices.emplace_back(static_cast<u32>(m_indices.size()));
+            model->elems.emplace_back(static_cast<u32>(model->elems.size()));
             ++index_count;
         }
 
-        Shape& s = m_shapes.emplace_back();
+        IO_Model_Shape& s = model->shapes.emplace_back();
         s.index_offset = index_offset;
         s.index_count = index_count;
         s.material_index = shape.mesh.material_ids.empty() ? 0u : static_cast<u32>(shape.mesh.material_ids[0]);
@@ -115,5 +91,5 @@ Model::Model(std::string_view filename, bool normals_as_colors)
         ++it_index;
     }
     
-    m_loaded = true;
+    return true;
 }

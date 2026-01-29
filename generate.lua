@@ -151,7 +151,7 @@ function prj_game(name)
 
     includedirs { 
         inc_game_base, 
-        loc .. "/code",
+        loc .. "/code/**",
     }
 
     files { 
@@ -176,7 +176,7 @@ workspace "cpp-core"
     location ".project-files"
     architecture "x64"
     configurations { "debug", "release", "dist" }
-    startproject "pong"
+    startproject "sandbox"
 
 ---------------------------------------------
 -------------- PROJECT IMGUI ----------------

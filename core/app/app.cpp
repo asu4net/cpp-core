@@ -16,7 +16,7 @@ internal fn APIENTRY _gl_debug_callback(
     const void* userParam
 ) -> void
 {
-    dbg_log("[GL DEBUG] %s", message);
+    logf("[GL DEBUG] %s", message);
 }
 
 #endif

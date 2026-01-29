@@ -14,7 +14,7 @@ Win32_Window::Win32_Window(const Window_Desc& ds)
 {
     if (ds.flags & Window_Desc::Flags::MAIN_WINDOW)
     {
-        if (dbg_ensure(!g_main_window, "There is already a main window!"))
+        if (ensuref(!g_main_window, "There is already a main window!"))
         {
             g_main_window = this;
 
@@ -36,14 +36,14 @@ Win32_Window::Win32_Window(const Window_Desc& ds)
             //@Note: CreateSolidBrush changes the background color, I guess.
             wc.hbrBackground = CreateSolidBrush(RGB(ds.bg_color.x * 255, ds.bg_color.y * 255, ds.bg_color.z * 255));
 
-            if (!dbg_ensure(RegisterClass(&wc) != 0, "Couldn't register the Win32 window class.\n")) return;
+            if (!ensuref(RegisterClass(&wc) != 0, "Couldn't register the Win32 window class.\n")) return;
 
-            dbg_log("Win32 Window class registered!");
+            logf("Win32 Window class registered!");
         }
     }
     else
     {
-        if (!dbg_ensure(g_main_window, "We need a Main Window created first!"))
+        if (!ensuref(g_main_window, "We need a Main Window created first!"))
         {
             return;
         }
@@ -77,13 +77,13 @@ Win32_Window::Win32_Window(const Window_Desc& ds)
         nullptr                     // Additional application data.
     );
 
-    if (dbg_ensure(hwnd != 0, "Couldn't create the Win32 window!"))
+    if (ensuref(hwnd != 0, "Couldn't create the Win32 window!"))
     {
         m_handle = hwnd;
         if (ds.flags & Window_Desc::Flags::SHOW) show();
     }
 
-    dbg_log("Win32 Window created!");
+    logf("Win32 Window created!");
 
 #if defined(GAME_GL)
     if (ds.flags & Window_Desc::Flags::CONTEXT)
@@ -121,7 +121,7 @@ Win32_Window::~Win32_Window()
 
         DestroyWindow(m_handle);
         m_handle = nullptr;
-        dbg_log("Win32 Window destroyed!");
+        logf("Win32 Window destroyed!");
     }
 }
 
@@ -139,7 +139,7 @@ auto Win32_Window::handle() const -> void*
 auto Win32_Window::present(bool vsync) const -> void
 {
 #if defined(GAME_GL)
-    if (dbg_ensure(m_gl_context, "We need a wgl context to present! \n"))
+    if (ensuref(m_gl_context, "We need a wgl context to present! \n"))
     {
         m_gl_context->swap_interval(vsync ? 1 : 0);
         m_gl_context->swap_buffers();

@@ -1,5 +1,7 @@
-#include "gpu_scene2d_gl.h"
+#include "gl_quad.h"
 #include "app.h"
+
+#if GAME_GL
 
 struct {
 
@@ -9,18 +11,18 @@ struct {
         u32 ebo = 0u;
         u32 ubo = 0u;
         u32 pgm = 0u;
-    } gl_objects;
+    } objects;
 
     struct {
         Mat4 projection = Mat.Identity4;
         Mat4 transform = Mat.Identity4;
     } shader_data;
 
-} internal g_scene2d;
+} internal gl_quad;
 
-fn gpu_scene2d_init_gl() -> void {
+fn gl_quad_buffer_init() -> void {
 
-    auto& [vao, vbo, ebo, ubo, pgm] = g_scene2d.gl_objects;
+    auto& [vao, vbo, ebo, ubo, pgm] = gl_quad.objects;
 
     constexpr f32 QUAD_VTS[] = {
         -0.5f, -0.5f, // Vertex 0. Bottom-left. 
@@ -69,7 +71,7 @@ fn gpu_scene2d_init_gl() -> void {
 
     // *** UBO ***
     glCreateBuffers(1, &ubo);
-    glNamedBufferData(ubo, sizeof(g_scene2d.shader_data), nullptr, GL_DYNAMIC_DRAW);
+    glNamedBufferData(ubo, sizeof(gl_quad.shader_data), nullptr, GL_DYNAMIC_DRAW);
 
     // *** Program ***
     std::string source = os_read_entire_file("shader_flat_color.glsl");
@@ -79,23 +81,23 @@ fn gpu_scene2d_init_gl() -> void {
     f32 zoom = 3.0f;         
     f32 nearpl = 0.0f;      
     f32 farpl = 0.1f;      
-    g_scene2d.shader_data.projection = Mat4::transpose(Mat4::orthographic(aspect, zoom, nearpl, farpl));
+    gl_quad.shader_data.projection = Mat4::transpose(Mat4::orthographic(aspect, zoom, nearpl, farpl));
 }
 
-fn gpu_scene2d_done_gl() -> void {
+fn gl_quad_buffer_done() -> void {
 
-    auto& [vao, vbo, ebo, ubo, pgm] = g_scene2d.gl_objects;
+    auto& [vao, vbo, ebo, ubo, pgm] = gl_quad.objects;
     glDeleteProgram(pgm);
     glDeleteBuffers(1, &ubo);
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteVertexArrays(1, &vao);
-    g_scene2d = {};
+    gl_quad = {};
 }
 
-fn gpu_draw_quad_gl(const Vec3& pos, const Vec3& rot, const Vec3& scl) -> void {
-    auto& [vao, vbo, ebo, ubo, pgm] = g_scene2d.gl_objects;
-    auto& shader_data = g_scene2d.shader_data;
+fn gl_quad_draw(const Vec3& pos, const Vec3& rot, const Vec3& scl) -> void {
+    auto& [vao, vbo, ebo, ubo, pgm] = gl_quad.objects;
+    auto& shader_data = gl_quad.shader_data;
 
     shader_data.transform = Mat4::transpose(Mat4::transform(pos, rot, scl));
     glNamedBufferSubData(ubo, 0, sizeof(shader_data), &shader_data);
@@ -104,3 +106,5 @@ fn gpu_draw_quad_gl(const Vec3& pos, const Vec3& rot, const Vec3& scl) -> void {
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, /* index_count */ 6, GL_UNSIGNED_INT, nullptr);
 }
+
+#endif
