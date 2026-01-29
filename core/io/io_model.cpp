@@ -4,7 +4,7 @@
 #include "tiny_obj_loader.h"
 
 fn io_model_load(std::string_view filename, IO_Model* model) -> bool {
-    if (filename.empty()) {
+    if (filename.empty() || !model) {
         return false;
     }
 
