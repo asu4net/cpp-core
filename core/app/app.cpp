@@ -1,6 +1,4 @@
 #include "app.h"
-#include "os_core.h"
-#include "imgui.h"
 
 #if defined(GAME_DEBUG) && defined(GAME_GL)
 
@@ -40,7 +38,7 @@ fn app_init(App_Desc ds) -> bool {
         imgui_init(os_window());
     }
     
-    audio_init();
+    io_audio_init();
     
 #if defined(GAME_DEBUG) && defined(GAME_GL)
     glEnable(GL_DEBUG_OUTPUT);
@@ -60,7 +58,7 @@ fn app_done() -> void {
         return;
     }
 
-    audio_done();
+    io_audio_init();
     imgui_done();
     os_window_done();
     os_input_done();
@@ -77,7 +75,7 @@ fn app_running() -> bool {
     };
 
     os_poll_events();
-    time_step();
+    os_time_step();
 
     for (const auto& event: os_events_this_frame()) {
         if (event.type == Input_Event::Quit) {

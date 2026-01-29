@@ -1,5 +1,20 @@
 #pragma once
 
+// @Pending: (He perdido la paciencia, voy a escribir esto en español).
+
+// Este modelo no es el que realmente querríamos para una app real.
+
+// Tanto la carga de imágenes como de meshes ha de ir a un buffer de
+// pixeles como de vertices respectivamente. No esto que tenemos.
+// Luego simplemente la info que tienen los propios objetos de 
+// IO_Image e IO_Mesh, serían los rangos de ese array.
+
+// A futuro, querríamos hacerlo dinámico y poder descargar imagenes, modelos
+// a placer, así que ahí las solución es trabajar por páginas.
+// Tener un modelo de almacenamiento con páginas pequeñas, medianas,
+// y grandes e ir colocando las imágenes y mallas en cada una. Así al librerar
+// libreraríamos por página. 
+
 struct IO_Image {
     u8* data = nullptr;
     i32 width = 0;

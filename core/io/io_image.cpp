@@ -18,6 +18,7 @@ fn io_image_load(std::string_view filename, IO_Image* image) -> bool {
     checkf(data, "IO_Image load failed!\n");
     image->data = data; 
     image->is_owner = true;
+    return true;
 }
 
 fn io_image_free(IO_Image* image) -> void {

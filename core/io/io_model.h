@@ -1,5 +1,11 @@
 #pragma once
 
+// @Pending:
+
+// Este modelo no es el que realmente querríamos para una app real.
+
+// (para desarrollo mirar io_image.h).
+
 struct IO_Model_VTX {
     Vec3 pos;
     Vec2 uv;

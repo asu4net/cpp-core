@@ -1,9 +1,9 @@
 
-#include "m_imgui.h"
+#include "imgui_state.h"
 #include "os_window.h"
 
 #if defined(GAME_WIN) && defined(GAME_GL)
-#   include "imgui_win32_gl.h"
+#   include "imgui_state_win32_gl.h"
 #endif
 
 internal bool g_imgui_is_init = false;

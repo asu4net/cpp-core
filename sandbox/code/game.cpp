@@ -104,7 +104,7 @@ fn main() -> i32 {
 
         // We want to see the quad in movement in order
         // to know if we nailed the UBO setup.
-        quad_pos += Vec3(F32.Right) * time_delta();
+        quad_pos += Vec3(F32.Right) * os_delta_time();
 
         // Now we create a transform matrix with the vector.
         shader_data.transform = Mat4::transpose(Mat4::transform(quad_pos));

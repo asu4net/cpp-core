@@ -1,16 +1,19 @@
 
 #pragma once
-#include "m_time.h"
-#include "m_imgui.h"
-#include "audio.h"
-
+#include "os_time.h"
 #include "os_window.h"
 #include "os_input.h"
 #include "os_core.h"
 
 #ifdef GAME_GL
-    #include "os_gl.h"
+#include "os_gl.h"
 #endif
+
+#include "io_audio.h"
+#include "io_image.h"
+#include "io_model.h"
+
+#include "imgui_state.h"
 
 // @Note: This file is just a C-style easy wrapper for the common stuff. You don't need to use it.
 

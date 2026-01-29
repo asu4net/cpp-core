@@ -115,19 +115,19 @@ fn test_ball_walls(Game_State& gs) {
     if (top >= Walls.Top) {
         box.y = Walls.Top - box.half_h;
         vel.y *= -1;
-        audio_play(gs.blip);
+        io_audio_play(gs.blip);
     } else if (bottom <= Walls.Bottom) {
         box.y = Walls.Bottom + box.half_h;
         vel.y *= -1;
-        audio_play(gs.blip);
+        io_audio_play(gs.blip);
     } else if (right >= Walls.Right) {
         box.x = Walls.Right - box.half_w;
         vel.x *= -1;
-        audio_play(gs.blip);
+        io_audio_play(gs.blip);
     } else if (left <= Walls.Left) {
         box.x = Walls.Left + box.half_w;
         vel.x *= -1;
-        audio_play(gs.blip);
+        io_audio_play(gs.blip);
     }
 }
 
@@ -152,7 +152,7 @@ fn test_ball_point(Game_State& gs) {
     if (points > 10) {
         reset_game_state(gs);
     } else if (points > 0) {
-        audio_play(gs.blip2);
+        io_audio_play(gs.blip2);
         reset_players(gs);
         reset_ball(gs);
     }
@@ -179,7 +179,7 @@ fn test_ball_player(Game_State& gs, Player& p) {
 
     dir = dir.normalized();
     b.vel = dir * b.speed;
-    audio_play(gs.blip);
+    io_audio_play(gs.blip);
 } 
 
 fn draw_box(const AABB& box) {
@@ -200,25 +200,25 @@ fn main() -> i32 {
     gl_quad_buffer_init();
 
     Game_State gs;
-    gs.blip = audio_load("pong_blip.wav");
-    gs.blip2 = audio_load("pong_blip_2.wav");
+    gs.blip = io_audio_load("pong_blip.wav");
+    gs.blip2 = io_audio_load("pong_blip_2.wav");
     reset_game_state(gs);
     
     while (app_running())
     {
-        const f32 dt = time_delta();
+        const f32 dt = os_delta_time();
 
         // Logic.
         if (os_key_down('R')) {
             reset_game_state(gs);
         }
         if (os_key_down('M')) {
-            audio_set_volume(gs.blip, 0.0f);
-            audio_set_volume(gs.blip2, 0.0f);
+            io_audio_set_volume(gs.blip, 0.0f);
+            io_audio_set_volume(gs.blip2, 0.0f);
         }
         if (os_key_down(Key_Code::Shift) && os_key_down('M')) {
-            audio_set_volume(gs.blip, 1.0f);
-            audio_set_volume(gs.blip2, 1.0f);
+            io_audio_set_volume(gs.blip, 1.0f);
+            io_audio_set_volume(gs.blip2, 1.0f);
         }
 
         auto& pL = gs.pL;
@@ -280,8 +280,8 @@ fn main() -> i32 {
         os_swap_buffers();
     }
 
-    audio_free(gs.blip);
-    audio_free(gs.blip2);
+    io_audio_free(gs.blip);
+    io_audio_free(gs.blip2);
     gl_quad_buffer_done();
     app_done();
 }
