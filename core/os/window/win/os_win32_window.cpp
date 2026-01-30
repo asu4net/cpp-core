@@ -102,6 +102,10 @@ Win32_Window::Win32_Window(const Window_Desc& ds)
         rid.hwndTarget = hwnd;
         RegisterRawInputDevices(&rid, 1, sizeof(rid));
     }
+
+    if (hwnd) {
+        SetForegroundWindow(hwnd);
+    }
 }
 
 Win32_Window::~Win32_Window()
