@@ -9,7 +9,7 @@
 auto IInput::create(const Input_Desc& ds) -> Ptr
 {
 #if defined(GAME_WIN)
-    return std::make_unique<Win32_Input>(ds);
+    return new Win32_Input(ds);
 #else
     return nullptr;
 #endif
@@ -26,7 +26,7 @@ fn os_input_init(const Input_Desc& ds) -> bool {
 }
 
 fn os_input_done() -> void {
-    g_input.reset();    
+    delete g_input;
 }
 
 fn os_events_this_frame() -> const std::vector<Input_Event>& {

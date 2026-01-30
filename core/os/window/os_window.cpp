@@ -9,7 +9,7 @@
 auto IWindow::create(const Window_Desc& ds) -> Ptr
 {
 #if defined(GAME_WIN)
-    return std::make_shared<Win32_Window>(ds);
+    return new Win32_Window(ds);
 #else
     return nullptr;
 #endif
@@ -27,11 +27,11 @@ fn os_window_init(Window_Desc ds) -> bool {
 }
 
 fn os_window_done() -> void {
-    g_window.reset();
+    delete g_window;
 }
 
 fn os_window() -> IWindow& {
-    return *g_window.get();
+    return *g_window;
 }
 
 fn os_swap_buffers(bool vsync) -> void {

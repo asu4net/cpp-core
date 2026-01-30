@@ -124,7 +124,7 @@ fn os_set_cursor_mode(Cursor_Mode mode) -> void;
 class IInput
 {
 public:
-    using Ptr = std::unique_ptr<IInput>;
+    using Ptr = IInput*;
     static auto create(const Input_Desc& ds = {})->Ptr;
 
     virtual ~IInput() = default;

@@ -26,8 +26,7 @@ fn os_swap_buffers(bool vsync = true) -> void;
 class IWindow
 {
 public:
-    using Weak_Ptr = std::weak_ptr<IWindow>;
-    using Ptr = std::shared_ptr<IWindow>;
+    using Ptr = IWindow*;
 
     static auto create(const Window_Desc& ds = {})->Ptr;
 
