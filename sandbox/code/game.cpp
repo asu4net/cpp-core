@@ -117,18 +117,19 @@ fn main() -> i32 {
     // *** Texture ***
     
     // Handcraft a 4 pixel image.
-    u8 image_pixels[16] = {
-        042u, 045u, 121u, 255u, // Some blue.
-        232u, 005u, 103u, 255u, // Some red.
-        255u, 142u, 104u, 255u, // Some orange.
-        244u, 234u, 188u, 255u, // Some yellow.
-    };    
+    //u8 image_pixels[16] = {
+    //    042u, 045u, 121u, 255u, // Some blue.
+    //    232u, 005u, 103u, 255u, // Some red.
+    //    255u, 142u, 104u, 255u, // Some orange.
+    //    244u, 234u, 188u, 255u, // Some yellow.
+    //};    
 
     IO_Image image;
-    image.data     = image_pixels;
-    image.channels = 4; // RGBA
-    image.width    = 2; // Pixel Width.
-    image.height   = 2; // Pixel Height.
+    io_image_load("hello_kitty.png", &image);
+    //image.data     = image_pixels;
+    //image.channels = 4; // RGBA
+    //image.width    = 2; // Pixel Width.
+    //image.height   = 2; // Pixel Height.
 
     // Create the texture object.
     u32 tex = 0u;
@@ -153,6 +154,12 @@ fn main() -> i32 {
     
     // Send the texture data to the gpu.
     glTextureSubImage2D(tex, 0, 0, 0, image.width, image.height, data_format, GL_UNSIGNED_BYTE, image.data);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Which means...
+    //final.rgb = src.rgb * src.a + dst.rgb * (1 - src.a)
+    //final.a   = src.a
 
     while (app_running())
     {
