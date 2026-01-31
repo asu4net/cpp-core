@@ -25,14 +25,6 @@
 				"presentation": {
 					"close": false
 				}
-			},
-			{
-                "label": "debug",
-                "command": "debug",
-				"group": {
-					"kind": "build",
-					"isDefault": true
-				}
 			}
         ]
     },
