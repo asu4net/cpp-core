@@ -6,10 +6,10 @@ fn main() -> i32 {
 
     // Counter-clock wise Quad Vertices.
     constexpr f32 QUAD_VTS[] = {
-        -0.5f, -0.5f, // Vertex 0. Bottom-left. 
-        +0.5f, -0.5f, // Vertex 1. Bottom-right.
-        +0.5f, +0.5f, // Vertex 2. Top-right.  
-        -0.5f, +0.5f, // Vertex 3. Top-left.
+        -0.5f, -0.5f,  0.0f, 0.0f, // Vertex 0. Bottom-left. 
+        +0.5f, -0.5f,  1.0f, 0.0f, // Vertex 1. Bottom-right.
+        +0.5f, +0.5f,  1.0f, 1.0f, // Vertex 2. Top-right.  
+        -0.5f, +0.5f,  0.0f, 1.0f, // Vertex 3. Top-left.
     };
     
     // *** VAO: Vertex Array Object ***
@@ -45,6 +45,21 @@ fn main() -> i32 {
     glVertexArrayAttribBinding(vao, Pos.Index, /* vbo binding */ 0u);
 
     // --------------------------------------------------------
+
+    // 1: UV --------------------------------------------------
+    
+    struct {
+        i32 Index = 1;
+        i32 Count = 2; // Two components: X, Y.
+        i32 Size  = sizeof(f32) * Count; // Size in bytes.
+    } constexpr UV;
+
+    glEnableVertexArrayAttrib(vao, UV.Index);
+    glVertexArrayAttribFormat(vao, UV.Index, UV.Count, GL_FLOAT, false, offset);
+    offset += UV.Size;
+    glVertexArrayAttribBinding(vao, UV.Index, /* vbo binding */ 0u);
+
+    // --------------------------------------------------------
     
     // *** VBO: Vertex Buffer Object ***
     
@@ -52,7 +67,7 @@ fn main() -> i32 {
     u32 vbo = 0u;
 
     // Total Vertex Size.
-    constexpr u64 QUAD_VT_SIZE = Pos.Size;
+    constexpr u64 QUAD_VT_SIZE = Pos.Size + UV.Size;
 
     // Create the buffer, and pass the raw memory of the vertices.
     glCreateBuffers(1, &vbo);
@@ -79,7 +94,7 @@ fn main() -> i32 {
     glVertexArrayElementBuffer(vao, ebo);
 
     // *** Shader Program ***
-    std::string source = os_read_entire_file("shader_flat_color.glsl");
+    std::string source = os_read_entire_file("shader_texture.glsl");
     u32 shader_flat_color = os_create_gl_program(source);
 
     // *** UBO: Uniform Buffer Object.
@@ -89,6 +104,7 @@ fn main() -> i32 {
     struct {
         Mat4 projection = Mat.Identity4;
         Mat4 transform = Mat.Identity4;
+        i32 tex_unit = 0;
     } shader_data;
 
     u32 ubo = 0u;
@@ -98,16 +114,58 @@ fn main() -> i32 {
     // Our quad position.
     Vec3 quad_pos;
 
+    // *** Texture ***
+    
+    // Handcraft a 4 pixel image.
+    u8 image_pixels[16] = {
+        042u, 045u, 121u, 255u, // Some blue.
+        232u, 005u, 103u, 255u, // Some red.
+        255u, 142u, 104u, 255u, // Some orange.
+        244u, 234u, 188u, 255u, // Some yellow.
+    };    
+
+    IO_Image image;
+    image.data     = image_pixels;
+    image.channels = 4; // RGBA
+    image.width    = 2; // Pixel Width.
+    image.height   = 2; // Pixel Height.
+
+    // Create the texture object.
+    u32 tex = 0u;
+    glCreateTextures(GL_TEXTURE_2D, 1, &tex);
+    
+    // Check if as RGB or RGBA.
+    i32 storage_format = image.channels == 4 ? GL_RGBA8 
+                       : image.channels == 3 ? GL_RGB8 : 0;
+
+    // Reserve the storage.    
+    glTextureStorage2D(tex, 1, storage_format, image.width, image.height);
+
+    // Texture config.
+    glTextureParameteri(tex, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(tex, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(tex, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(tex, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // Check if as RGB or RGBA. (Again :S)
+    i32 data_format = image.channels == 4 ? GL_RGBA 
+                    : image.channels == 3 ? GL_RGB : 0;
+    
+    // Send the texture data to the gpu.
+    glTextureSubImage2D(tex, 0, 0, 0, image.width, image.height, data_format, GL_UNSIGNED_BYTE, image.data);
+
     while (app_running())
     {
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        glBindTextureUnit(0, tex);
 
         // We want to see the quad in movement in order
         // to know if we nailed the UBO setup.
-        quad_pos += Vec3(F32.Right) * os_delta_time();
+        //quad_pos += Vec3(F32.Right) * os_delta_time();
 
         // Now we create a transform matrix with the vector.
-        shader_data.transform = Mat4::transpose(Mat4::transform(quad_pos));
+        shader_data.transform = Mat4::transpose(Mat4::transform(quad_pos, F32.Zero, Vec3(F32.One) * 2.0f));
         
         // Also an orthographic projection matrix, to get world
         // space coordinates instead of NDC.
@@ -118,7 +176,8 @@ fn main() -> i32 {
         f32 farpl  = 0.1f;         // "Front" plane.
         
         shader_data.projection = Mat4::transpose(Mat4::orthographic(aspect, zoom, nearpl, farpl));
-        
+        shader_data.tex_unit = 0;
+
         // Then we pase our struct instance to the UBO and
         // tell OpenGL we're about to use it.
         glNamedBufferSubData(ubo, 0, sizeof(shader_data), &shader_data);
@@ -128,6 +187,17 @@ fn main() -> i32 {
         // our VAO and our shader in the next
         // draw call.
         glUseProgram(shader_flat_color);
+        
+        // Create the sampler array.
+        i32 samplers[32];
+        for (i32 i = 0; i < 32; ++i) {
+            samplers[i] = i;
+        }
+
+        // Pass the sampler array to the gpu via single uniform. 
+        GLint location = glGetUniformLocation(shader_flat_color, "u_samplers");
+        glUniform1iv(location, 32, samplers);
+
         glBindVertexArray(vao);
 
         // The draw call.
