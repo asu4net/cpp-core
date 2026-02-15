@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/3rd/box2d/include",
+                "${workspaceFolder}/3rd/box2d/src"
+            ],
+            "defines": [
+                "GAME_DEBUG",
+                "GAME_GL", 
+                "GAME_WIN",
+                "WIN32",
+                "_WINDOWS",
+                "_UNICODE",
+                "UNICODE"
+            ],
+            "compilerPath": "cl.exe",
+            "intelliSenseMode": "msvc-x64",
+            "forcedInclude": [
+                "${workspaceFolder}/core/core_pch.h",
+                "${workspaceFolder}/examples/01_quads/code/game_pch.h",
+                "${workspaceFolder}/examples/02_textures/code/game_pch.h",
+                "${workspaceFolder}/examples/03_batch_rendering_2d/code/game_pch.h"
+            ]
+        }
+    ],
+    "version": 4
+}

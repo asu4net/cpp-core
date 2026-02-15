@@ -1,0 +1,74 @@
+@echo off
+setlocal
+
+:: -----------------------------
+:: Defaults
+:: -----------------------------
+set BUILD_CONFIG=debug
+set OPEN_DEBUGGER=false
+set TARGET_ENV=vs2022
+
+:: -----------------------------
+:: Parse arguments
+:: -----------------------------
+if /I "%1"=="debugger" (
+    set OPEN_DEBUGGER=true
+) else if /I "%1"=="debug" (
+    set BUILD_CONFIG=debug
+) else if /I "%1"=="release" (
+    set BUILD_CONFIG=release
+) else if /I "%1"=="dist" (
+    set BUILD_CONFIG=dist
+) else if not "%1"=="" (
+    echo ERROR: Unknown argument "%1"
+    exit /b 1
+)
+
+if /I "%2"=="debugger" (
+    set OPEN_DEBUGGER=true
+) else if not "%2"=="" (
+    echo ERROR: Unknown argument "%2"
+    exit /b 1
+)
+
+:: -----------------------------
+:: Setup VS environment
+:: -----------------------------
+
+call 3rd\premake\premake5.exe --file="generate.lua" "%TARGET_ENV%"
+
+if errorlevel 1 (
+    echo ERROR: Failed to generate project files.
+    exit /b 1
+)
+
+:: -----------------------------
+:: Build
+:: -----------------------------
+set MSBUILD="C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
+
+call %MSBUILD% ".project-files/cpp-core.sln" ^
+    /p:Configuration="%BUILD_CONFIG%" ^
+    /p:Platform=x64
+
+if errorlevel 1 (
+    echo.
+    echo BUILD FAILED
+    exit /b 1
+)
+
+echo.
+echo BUILD SUCCEEDED
+
+:: -----------------------------
+:: Optional debugger launch
+:: -----------------------------
+
+set RADDBG="3rd/raddbg/raddbg.exe"
+
+if "%OPEN_DEBUGGER%"=="true" (
+    echo Launching debugger...
+    call %RADDBG% --auto_run --quit_after_success
+)
+
+endlocal

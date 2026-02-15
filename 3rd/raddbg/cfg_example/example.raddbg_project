@@ -1,0 +1,109 @@
+// raddbg 0.9.25 project file
+
+recent_file: path: "../../../utad-3d/cpp-core-main/games/survive2d/code/main.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/core/draw/draw.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/core/base/base_check.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/core/base/base_check.h"
+recent_file: path: "../../../utad-3d/cpp-core-main/core/graphics/graphics.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/games/pong/code/main.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/core/graphics/draw.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-dev/core/draw/draw.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/examples/03_batch_rendering_2d/code/main.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-main/examples/02_textures/code/main.cpp"
+recent_file: path: "../../../utad-3d/cpp-core-dev/pong/code/game.cpp"
+recent_file: path: "../../../utad-3d/Clase-1/Resources/cpp-core/sandbox/code/game.cpp"
+recent_file: path: "../../../utad-3d/cpp-core/core/io/io_audio.cpp"
+recent_file: path: "../../../utad-3d/cpp-core/sandbox/code/game.cpp"
+recent_file: path: "../../../utad-3d/cpp-core/core/base/base_check.h"
+recent_file: path: "../../../utad-3d/cpp-core/pong/code/game.cpp"
+recent_file: path: "../../../../a/_work/1/s/src/vctools/crt/vcstartup/src/startup/exe_common.inl"
+recent_file: path: "../../../utad-3d/cpp-core/core/draw/draw.cpp"
+recent_file: path: "../../../../../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/xstring"
+recent_file: path: "../../../utad-3d/cpp-core/core/graphics/graphics.cpp"
+recent_file: path: "../../../utad-3d/cpp-core/core/base/base_aliases.h"
+recent_file: path: "../../../../a/_work/1/s/src/vctools/crt/vcstartup/src/misc/debugger_jmc.c"
+recent_file: path: "../../../utad-3d/cpp-core/core/app/app.cpp"
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core/.bin/pong/debug/pong.pdb"
+  timestamp: 66205921130537
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core/.bin/sandbox/debug/sandbox.pdb"
+  timestamp: 66205431239099
+}
+breakpoint:
+{
+  source_location: "../../../utad-3d/cpp-core/core/draw/draw.cpp:47:26"
+  hit_count: 0
+  enabled: 0
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/Clase-1/Resources/cpp-core/.bin/sandbox/debug/sandbox.pdb"
+  timestamp: 66205520108416
+}
+target:
+{
+  executable: "../../../utad-3d/cpp-core-main/.bin/pong/debug/pong.exe"
+  working_directory: "../../../utad-3d/cpp-core-main/games/pong/assets"
+  enabled: 0
+}
+target:
+{
+  executable: "../../../utad-3d/cpp-core-main/.bin/01_quads/debug/01_quads.exe"
+  working_directory: "../../../utad-3d/cpp-core-main/examples/01_quads/assets"
+  enabled: 0
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core/.bin/01_quads/debug/01_quads.pdb"
+  timestamp: 66205922880812
+}
+target:
+{
+  executable: "../../../utad-3d/cpp-core-main/.bin/02_textures/debug/02_textures.exe"
+  working_directory: "../../../utad-3d/cpp-core-main/examples/02_textures/assets"
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core/.bin/02_textures/debug/02_textures.pdb"
+  timestamp: 66205925967976
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core-main/.bin/02_textures/debug/02_textures.pdb"
+  timestamp: 66205927058284
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core-dev/.bin/pong/debug/pong.pdb"
+  timestamp: 66206476578865
+}
+target:
+{
+  executable: "../../../utad-3d/cpp-core-main/.bin/03_batch_rendering_2d/debug/03_batch_rendering_2d.exe"
+  working_directory: "../../../utad-3d/cpp-core-main/examples/03_batch_rendering_2d/assets"
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core-main/.bin/03_batch_rendering_2d/debug/03_batch_rendering_2d.pdb"
+  timestamp: 66206026799414
+}
+target:
+{
+  executable: "../../../utad-3d/cpp-core-main/.bin/survive2d/debug/survive2d.exe"
+  working_directory: "../../../utad-3d/cpp-core-main/games/survive2d/assets"
+  enabled: 1
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core-main/.bin/survive2d/debug/survive2d.pdb"
+  timestamp: 66206565597972
+}
+debug_info:
+{
+  path: "D:/dev/utad-3d/cpp-core-main/.bin/pong/debug/pong.pdb"
+  timestamp: 66206563381795
+}
