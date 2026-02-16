@@ -275,15 +275,20 @@ fn remove(Fixed_Handle_Array<T, _cap>* array, Array_Handle handle) -> bool {
 }
 
 template<typename T, u32 _cap>
+fn get_default(Fixed_Handle_Array<T, _cap> array) -> T* {
+    return &array.data[0];
+}
+
+template<typename T, u32 _cap>
 fn get(Fixed_Handle_Array<T, _cap> array, Array_Handle handle) -> T* {
     constexpr u32 total_cap = Fixed_Handle_Array<T, _cap>::cap;
     if (handle.index == 0u || handle.index >= total_cap) {
-        return nullptr;
+        return get_default(array);
     }
     
     const typename Fixed_Handle_Array<T, _cap>::Elem_Info& info = array.info_data[handle.index];
     if (!info.occupied || info.generation != handle.generation) {
-        return nullptr;
+        return get_default(array);
     }
     
     return &array.data[handle.index];
