@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "entity_game_defs.h"
+#include "entity_kinds.h"
 
 // Kind enum.
 enum Entity_Kind : u64 {
@@ -25,7 +25,7 @@ enum Entity_Kind : u64 {
 #undef forward_declare
 
 // Base entity type.
-struct Entity_Base {
+struct Entity {
     Entity_Kind kind = Entity_Kind_None;
     bool enabled = true;
     Vec3 pos = F32.Zero;
@@ -36,10 +36,13 @@ struct Entity_Base {
     s32 cell = 0; 
 };
 
+fn _Serialize_Entity(const Entity*, std::string*) -> void;
+fn _Deserialize_Entity(std::string_view, Entity*) -> void;
+
 // Entity callbacks.
-using Entity_Fn_Serialize = void(*)(const Entity_Base*, std::string*);
-using Entity_Fn_Deserialize = void(*)(std::string_view, Entity_Base*);
-using Entity_Fn_Loop = void (*)(Entity_Base *);
+using Entity_Fn_Serialize = void(*)(const Entity*, std::string*);
+using Entity_Fn_Deserialize = void(*)(std::string_view, Entity*);
+using Entity_Fn_Loop = void (*)(Entity *);
 
 // Entity handle.
 struct Entity_Handle {
@@ -65,12 +68,20 @@ fn world_done() -> void;
 
 fn entity_create(Entity_Kind kind = (Entity_Kind) 1u) -> Entity_Handle;
 fn entity_destroy(Entity_Handle handle) -> void;
-fn entity_get(Entity_Handle handle) -> Entity_Base*;
+fn entity_get(Entity_Handle handle) -> Entity*;
 fn entity_loop(Entity_Fn_Loop loop) -> void;
 
 #endif
 
 #ifdef GAME_ENTITY_IMPL
+
+fn _Serialize_Entity(const Entity*, std::string*) -> void {
+
+}
+
+fn _Deserialize_Entity(std::string_view, Entity*) -> void {
+
+}
 
 static World* world = nullptr;
 
@@ -139,7 +150,7 @@ fn entity_destroy(Entity_Handle handle) -> void {
     }
 }
 
-fn entity_get(Entity_Handle handle) -> Entity_Base* {
+fn entity_get(Entity_Handle handle) -> Entity* {
     switch (handle.kind) {
         #define choose_storage(_kind)                                  \
             case Entity_Kind_##_kind:                                  \
