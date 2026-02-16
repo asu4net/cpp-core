@@ -32,17 +32,18 @@ struct Entity {
     Vec3 rot = F32.Zero;
     Vec3 scl = F32.One;
     Vec4 tint = Color.White;
-    struct Texture* tex = nullptr;
+    struct Texture* tex = nullptr; // @Pending: This should be an asset handle.
     s32 cell = 0; 
 };
 
 fn _Serialize_Entity(const Entity*, std::string*) -> void;
 fn _Deserialize_Entity(std::string_view, Entity*) -> void;
+// @Pending: _Draw_Imgui callback.
 
 // Entity callbacks.
 using Entity_Fn_Serialize = void(*)(const Entity*, std::string*);
 using Entity_Fn_Deserialize = void(*)(std::string_view, Entity*);
-using Entity_Fn_Loop = void (*)(Entity *);
+using Entity_Fn_Update = void (*)(Entity *);
 
 // Entity handle.
 struct Entity_Handle {
@@ -67,14 +68,15 @@ fn world_init() -> void;
 fn world_done() -> void;
 
 fn entity_create(Entity_Kind kind = (Entity_Kind) 1u) -> Entity_Handle;
-fn entity_destroy(Entity_Handle handle) -> void;
+fn entity_destroy(Entity_Handle handle) -> void; // @Pending: Save the entities to a cleanup list and wait till the frame ends.
 fn entity_get(Entity_Handle handle) -> Entity*;
-fn entity_loop(Entity_Fn_Loop loop) -> void;
+fn entity_pass(Entity_Fn_Update update) -> void;
 
 #endif
 
 #ifdef GAME_ENTITY_IMPL
 
+// @Pending: Entity serialization.
 fn _Serialize_Entity(const Entity*, std::string*) -> void {
 
 }
@@ -166,15 +168,15 @@ fn entity_get(Entity_Handle handle) -> Entity* {
     }
 }
 
-fn entity_loop(Entity_Fn_Loop loop) -> void {
-    #define do_loop(_kind)                                 \
+fn entity_pass(Entity_Fn_Update update) -> void {
+    #define do_pass(_kind)                                 \
         for(_kind& entity: world->_kind##_Storage) {       \
             if (entity.enabled) {                          \
-                loop(&entity);                             \
+                update(&entity);                           \
             }                                              \
         }
 
-    for_entity_kinds(do_loop)
+    for_entity_kinds(do_pass)
 }
 
 #endif

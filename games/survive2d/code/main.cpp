@@ -41,7 +41,7 @@ fn main() -> s32 {
     while(app_running()) {
         
         clear_back_buffer();
-        entity_loop(draw_sprite_entity);
+        entity_pass(draw_sprite_entity);
         os_swap_buffers();
     }
 
