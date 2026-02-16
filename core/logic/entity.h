@@ -111,6 +111,7 @@ fn world_done() -> void {
     #undef free_storage
 
     delete world;
+    world = nullptr;
 }
 
 fn entity_create(Entity_Kind kind) -> Entity_Handle {
