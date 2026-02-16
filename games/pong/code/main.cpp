@@ -183,10 +183,9 @@ fn test_ball_player(Game_State& gs, Player& p) {
 } 
 
 fn draw_box(const AABB& box) {
-    Draw_Sprite sprite;
-    sprite.pos = { box.x, box.y, 0.0f };
-    sprite.scl = { box.half_w * 2.0f, box.half_h * 2.0f, 1.0f };
-    draw_sprite(sprite);
+    Vec3 pos = { box.x, box.y, 0.0f };
+    Vec3 scl = { box.half_w * 2.0f, box.half_h * 2.0f, 1.0f };
+    draw_sprite(Color.White, Mat4::transform(pos, F32.Zero, scl));
 }
 
 fn main() -> s32 {

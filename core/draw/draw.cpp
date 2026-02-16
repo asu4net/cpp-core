@@ -16,6 +16,7 @@ struct {
         Mat4 transform = Mat.Identity4;
         Vec2 uv_size = F32.One;
         Vec2 uv_offset = F32.Zero;
+        Vec4 tint = Color.White;
         s32  tex_unit = 0;
     } global_data;
 } scene;
@@ -63,35 +64,36 @@ fn draw_init() -> void {
     scene.global_data.projection = Mat4::transpose(Mat4::orthographic(aspect, zoom, nearpl, farpl));
 }
 
-fn draw_sprite(const Draw_Sprite& sprite) -> void {
+fn draw_sprite(const Texture* tex, s32 icell, Vec4 tint, const Mat4& transform) -> void {
 
     ser_blend_enabled();
     
-    if (sprite.tex && sprite.tex->cells.count) {
-        if (!ensuref(sprite.cell < sprite.tex->cells.count, "Error! Cell %i does not exist!", 20)) {
+    if (tex && tex->cells.count) {
+        if (!ensuref(icell < tex->cells.count, "Error! Cell %i does not exist!", 20)) {
             return;
         }
     
-        auto& cell = sprite.tex->cells.data[sprite.cell];
+        auto& cell = tex->cells.data[icell];
 
         scene.global_data.uv_size = { 
-            (f32) cell.width  / (f32) sprite.tex->width, 
-            (f32) cell.height / (f32) sprite.tex->height 
+            (f32) cell.width  / (f32) tex->width, 
+            (f32) cell.height / (f32) tex->height 
         }; 
         
         scene.global_data.uv_offset = { 
-            (f32) cell.x / (f32) sprite.tex->width, 
-            1.0f - ((f32)cell.y + cell.height) / sprite.tex->height
+            (f32) cell.x / (f32) tex->width, 
+            1.0f - ((f32)cell.y + cell.height) / tex->height
         };
     }
 
-    scene.global_data.transform = Mat4::transpose(Mat4::transform(sprite.pos, sprite.rot, sprite.scl));
+    scene.global_data.transform = Mat4::transpose(transform);
+    scene.global_data.tint = tint;
 
     texture_use(scene.white, 0u);
 
-    if (sprite.tex) {
+    if (tex) {
         scene.global_data.tex_unit = 1;
-        texture_use(*sprite.tex, /* unit */ 1u);
+        texture_use(*tex, /* unit */ 1u);
     } else {
         scene.global_data.tex_unit = 0;
     }
@@ -109,6 +111,10 @@ fn draw_sprite(const Draw_Sprite& sprite) -> void {
     global_buffer_use(scene.gbo);
 
     vertex_buffer_draw(quad.vbo);
+}
+
+fn draw_sprite(Vec4 tint, const Mat4& transform) -> void {
+    draw_sprite(nullptr, 0, tint, transform);
 }
 
 fn draw_done() -> void {

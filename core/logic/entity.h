@@ -31,6 +31,7 @@ struct Entity_Base {
     Vec3 pos = F32.Zero;
     Vec3 rot = F32.Zero;
     Vec3 scl = F32.One;
+    Vec4 tint = Color.White;
     struct Texture* tex = nullptr;
     s32 cell = 0; 
 };

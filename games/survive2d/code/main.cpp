@@ -3,6 +3,10 @@
 #include "graphics.h"
 #include "game_entity.h"
 
+static fn draw_sprite_entity(Entity_Base* e) {
+    draw_sprite(e->tex, e->cell, e->tint, Mat4::transform(e->pos, e->rot, e->scl));
+}
+
 fn main() -> s32 {
     
     App_Desc desc;
@@ -26,7 +30,6 @@ fn main() -> s32 {
 
     entityA->tex = &tex;
     entityA->scl = { 3.f, 3.f, 1.f };
-    entityA->enabled = false;
 
     entityB->pos = Vec3(F32.Right) * 2.f;
     entityB->tex = &tex;
@@ -36,20 +39,7 @@ fn main() -> s32 {
     while(app_running()) {
         
         clear_back_buffer();
-        auto fnDrawEntity = [](Entity_Base* entity_base) {
-            if (entity_base->kind != Entity_Kind_Entity) {
-                return;
-            }
-            Entity* entity = (Entity*) entity_base;
-            Draw_Sprite sprite;
-            sprite.pos = entity->pos;
-            sprite.rot = entity->rot;
-            sprite.scl = entity->scl;
-            sprite.tex = entity->tex;
-            sprite.cell = entity->cell;
-            draw_sprite(sprite);
-        };
-        entity_loop(fnDrawEntity);
+        entity_loop(draw_sprite_entity);
         os_swap_buffers();
     }
 
