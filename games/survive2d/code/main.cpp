@@ -41,6 +41,11 @@ fn main() -> s32 {
     Serializer s;
     serialize(&s, *entityA);
 
+    Deserializer d;
+    d.src = s.out;
+    Entity e;
+    deserialize(&d, &e);
+
     while(app_running()) {
         
         clear_back_buffer();

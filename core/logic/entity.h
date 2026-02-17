@@ -57,14 +57,11 @@ fn serialize_entity_done(Serializer* s) -> void;
 template<>
 fn serialize<Entity>(Serializer* s, const Entity& e) -> void;
 
-template<>
-fn deserialize<Entity>(std::string_view s, Entity* e) -> void;
-
 // @Pending: _Draw_Imgui callback.
 
 // Entity callbacks. WE WONT NEED THIS ? maybe on deserialization.
 using Entity_Fn_Serialize = void(*)(Serializer*, const Entity*);
-using Entity_Fn_Deserialize = void(*)(std::string_view, Entity*);
+using Entity_Fn_Deserialize = void(*)(Deserializer*, Entity*);
 
 using Entity_Fn_Update = void (*)(Entity *);
 
@@ -100,18 +97,32 @@ fn entity_pass(Entity_Fn_Update update) -> void;
 #ifdef GAME_ENTITY_IMPL
 
 fn serialize_entity_init(Serializer* s, const Entity& e) -> void {
-    serialize_field(s, "entity");
-    serialize_new_line(s);
     serialize_block_init(s);
     serialize_field(s, "kind", to_string(e.kind));
     serialize_field(s, "enabled", e.enabled);
     serialize_field(s, "pos", e.pos);
     serialize_field(s, "rot", e.rot);
     serialize_field(s, "scl", e.scl);
+    serialize_block_done(s);
 }
 
 fn serialize_entity_done(Serializer* s) -> void {
-    serialize_block_done(s);
+}
+
+fn deserialize_entity_init(Deserializer* d, Entity* e) -> void {
+    deserialize_block_init(d);
+    while (!deserialize_peek_block_done(d)) {
+        std::string_view key = deserialize_read_key(d);
+        if (key == "enabled") deserialize_value(d, e->enabled);
+        else if (key == "pos") deserialize_value(d, e->pos);
+        else if (key == "rot") deserialize_value(d, e->rot);
+        else if (key == "scl") deserialize_value(d, e->scl);
+        else deserialize_skip_line(d); // Unknown field, skip it
+    }
+}
+
+fn deserialize_entity_done(Deserializer* d) -> void {
+    deserialize_block_done(d);
 }
 
 template<>
@@ -121,7 +132,9 @@ fn serialize<Entity>(Serializer* s, const Entity& e) -> void {
 }
 
 template<>
-fn deserialize<Entity>(std::string_view s, Entity* e) -> void {
+fn deserialize<Entity>(Deserializer* d, Entity* e) -> void {
+    deserialize_entity_init(d, e);
+    deserialize_entity_done(d);
 }
 
 static World* world = nullptr;
@@ -139,9 +152,9 @@ fn world_init() -> void {
             const _kind* entity = static_cast<const Entity*>(e); \
             serialize<_kind>(s, *entity); \
         }; \
-        world->deserialize[Entity_Kind_##_kind] = [](std::string_view s, Entity* e) { \
+        world->deserialize[Entity_Kind_##_kind] = [](Deserializer* d, Entity* e) { \
             _kind* entity = static_cast<Entity*>(e); \
-            deserialize<_kind>(s, entity); \
+            deserialize<_kind>(d, entity); \
         };
 
         for_entity_kinds(set_callbacks)
