@@ -38,6 +38,9 @@ fn main() -> s32 {
     entityB->scl = { 3.f, 3.f, 1.f };
     entityB->cell = 1;
 
+    Serializer s;
+    serialize(&s, *entityA);
+
     while(app_running()) {
         
         clear_back_buffer();

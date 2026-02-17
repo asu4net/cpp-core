@@ -16,6 +16,21 @@ enum Entity_Kind : u64 {
     Entity_Kind_Count
 };
 
+inline fn to_string(Entity_Kind kind) -> const char* {
+    switch (kind)
+    {
+        #define stringify(_x) #_x
+        #define declare_switch_case(_kind) \
+            case Entity_Kind_##_kind: return stringify(Entity_Kind_##_kind);
+
+            for_entity_kinds(declare_switch_case)
+        #undef declare_switch_case
+        #undef stringify
+        
+        default: return "";
+    }
+}
+
 // Forward declarations.
 #define forward_declare(_kind) \
     struct _kind;
@@ -36,13 +51,21 @@ struct Entity {
     s32 cell = 0; 
 };
 
-fn _Serialize_Entity(const Entity*, std::string*) -> void;
-fn _Deserialize_Entity(std::string_view, Entity*) -> void;
+fn serialize_entity_init(Serializer* s, const Entity& e) -> void;
+fn serialize_entity_done(Serializer* s) -> void;
+
+template<>
+fn serialize<Entity>(Serializer* s, const Entity& e) -> void;
+
+template<>
+fn deserialize<Entity>(std::string_view s, Entity* e) -> void;
+
 // @Pending: _Draw_Imgui callback.
 
-// Entity callbacks.
-using Entity_Fn_Serialize = void(*)(const Entity*, std::string*);
+// Entity callbacks. WE WONT NEED THIS ? maybe on deserialization.
+using Entity_Fn_Serialize = void(*)(Serializer*, const Entity*);
 using Entity_Fn_Deserialize = void(*)(std::string_view, Entity*);
+
 using Entity_Fn_Update = void (*)(Entity *);
 
 // Entity handle.
@@ -76,13 +99,29 @@ fn entity_pass(Entity_Fn_Update update) -> void;
 
 #ifdef GAME_ENTITY_IMPL
 
-// @Pending: Entity serialization.
-fn _Serialize_Entity(const Entity*, std::string*) -> void {
-
+fn serialize_entity_init(Serializer* s, const Entity& e) -> void {
+    serialize_field(s, "entity");
+    serialize_new_line(s);
+    serialize_block_init(s);
+    serialize_field(s, "kind", to_string(e.kind));
+    serialize_field(s, "enabled", e.enabled);
+    serialize_field(s, "pos", e.pos);
+    serialize_field(s, "rot", e.rot);
+    serialize_field(s, "scl", e.scl);
 }
 
-fn _Deserialize_Entity(std::string_view, Entity*) -> void {
+fn serialize_entity_done(Serializer* s) -> void {
+    serialize_block_done(s);
+}
 
+template<>
+fn serialize<Entity>(Serializer* s, const Entity& e) -> void {
+    serialize_entity_init(s, e);
+    serialize_entity_done(s);
+}
+
+template<>
+fn deserialize<Entity>(std::string_view s, Entity* e) -> void {
 }
 
 static World* world = nullptr;
@@ -96,8 +135,14 @@ fn world_init() -> void {
     world = new World();
 
     #define set_callbacks(_kind) \
-        world->serialize[Entity_Kind_##_kind] = &_Serialize_##_kind; \
-        world->deserialize[Entity_Kind_##_kind] = &_Deserialize_##_kind; \
+        world->serialize[Entity_Kind_##_kind] = [](Serializer* s, const Entity* e) { \
+            const _kind* entity = static_cast<const Entity*>(e); \
+            serialize<_kind>(s, *entity); \
+        }; \
+        world->deserialize[Entity_Kind_##_kind] = [](std::string_view s, Entity* e) { \
+            _kind* entity = static_cast<Entity*>(e); \
+            deserialize<_kind>(s, entity); \
+        };
 
         for_entity_kinds(set_callbacks)
 }
