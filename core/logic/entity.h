@@ -103,13 +103,14 @@ fn serialize_entity_init(Serializer* s, const Entity& e) -> void {
     serialize_field(s, "pos", e.pos);
     serialize_field(s, "rot", e.rot);
     serialize_field(s, "scl", e.scl);
-    serialize_block_done(s);
 }
 
 fn serialize_entity_done(Serializer* s) -> void {
+    serialize_block_done(s);
 }
 
 fn deserialize_entity_init(Deserializer* d, Entity* e) -> void {
+    s32 cursor = d->cursor;
     deserialize_block_init(d);
     while (!deserialize_peek_block_done(d)) {
         std::string_view key = deserialize_read_key(d);
@@ -119,10 +120,12 @@ fn deserialize_entity_init(Deserializer* d, Entity* e) -> void {
         else if (key == "scl") deserialize_value(d, e->scl);
         else deserialize_skip_line(d); // Unknown field, skip it
     }
+    deserialize_block_done(d);
+    d->cursor = cursor; // Restore the cursor to make another pass.
 }
 
-fn deserialize_entity_done(Deserializer* d) -> void {
-    deserialize_block_done(d);
+inline fn deserialize_entity_done(Deserializer*) -> void {
+    // Dummy. We keep it for coherence.
 }
 
 template<>
