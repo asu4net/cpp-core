@@ -5,7 +5,7 @@
 // --------------------------------
 
 #define for_entity_kinds(_do) \
-    _do(Entity_Base)
+    _do(Entity_Base) \
 
 // --------------------------------
 
