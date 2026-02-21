@@ -18,7 +18,7 @@
 				"label": "build",
 				"type": "shell",
 				"command": "./build.bat",
-				"args": ["debug", "debugger"],
+				"args": ["survive2d", "debug"],
 				"group": {
 					"kind": "build",
 					"isDefault": true

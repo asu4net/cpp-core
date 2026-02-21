@@ -28,6 +28,7 @@ fn serialize_field(Serializer* s, std::string_view field, const T& value) -> voi
     s->out += "\n";
 }
 
+fn serialize(Serializer* s, const Vec2& v) -> void;
 fn serialize(Serializer* s, const Vec3& v) -> void;
 fn serialize(Serializer* s, const Vec4& v) -> void;
 

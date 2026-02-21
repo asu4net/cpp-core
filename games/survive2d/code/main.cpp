@@ -5,8 +5,13 @@
 #define ENTITY_IMPL
 #include "entity.h"
 
+// TODO 
+// - Sistema para serializar la textura dentro de la entidad
+//      - Decidir si necesitamos un sistema de assets para guardar referencias.
+//      - Guardar sistema de assets para cuando demos modelos.
+
 static fn draw_sprite_entity(Entity_Base* e) {
-    draw_sprite(e->tex, e->cell, e->tint, Mat4::transform(e->pos, e->rot, e->scl));
+    draw_sprite(e->tex, e->sprite, e->tint, Mat4::transform(e->pos, e->rot, e->scl));
 }
 
 fn main() -> s32 {
@@ -32,11 +37,12 @@ fn main() -> s32 {
 
     entityA->tex = &tex;
     entityA->scl = { 3.f, 3.f, 1.f };
+    entityA->sprite = 1;
 
     entityB->pos = Vec3(F32.Right) * 2.f;
     entityB->tex = &tex;
     entityB->scl = { 3.f, 3.f, 1.f };
-    entityB->cell = 1;
+    entityB->sprite = 1;
 
     Serializer s;
     serialize(&s, *entityA);

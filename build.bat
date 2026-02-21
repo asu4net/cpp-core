@@ -11,23 +11,23 @@ set TARGET_ENV=vs2022
 :: -----------------------------
 :: Parse arguments
 :: -----------------------------
-if /I "%1"=="debugger" (
+if /I "%2"=="debugger" (
     set OPEN_DEBUGGER=true
-) else if /I "%1"=="debug" (
+) else if /I "%2"=="debug" (
     set BUILD_CONFIG=debug
-) else if /I "%1"=="release" (
+) else if /I "%2"=="release" (
     set BUILD_CONFIG=release
-) else if /I "%1"=="dist" (
+) else if /I "%2"=="dist" (
     set BUILD_CONFIG=dist
-) else if not "%1"=="" (
-    echo ERROR: Unknown argument "%1"
+) else if not "%2"=="" (
+    echo ERROR: Unknown argument "%2"
     exit /b 1
 )
 
-if /I "%2"=="debugger" (
+if /I "%3"=="debugger" (
     set OPEN_DEBUGGER=true
-) else if not "%2"=="" (
-    echo ERROR: Unknown argument "%2"
+) else if not "%3"=="" (
+    echo ERROR: Unknown argument "%3"
     exit /b 1
 )
 
@@ -48,6 +48,7 @@ if errorlevel 1 (
 set MSBUILD="C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
 
 call %MSBUILD% ".project-files/cpp-core.sln" ^
+    /t:"%1" ^
     /p:Configuration="%BUILD_CONFIG%" ^
     /p:Platform=x64
 

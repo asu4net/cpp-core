@@ -27,6 +27,13 @@ fn serialize_new_line(Serializer* s) -> void {
     s->out += "\n";
 }
 
+fn serialize(Serializer* s, const Vec2& v) -> void {
+    serialize_block_init(s);
+    serialize_field(s, "x", v.x);
+    serialize_field(s, "y", v.y);
+    serialize_block_done(s);
+}
+
 fn serialize(Serializer* s, const Vec3& v) -> void {
     serialize_block_init(s);
     serialize_field(s, "x", v.x);
@@ -36,6 +43,7 @@ fn serialize(Serializer* s, const Vec3& v) -> void {
 }
 
 fn serialize(Serializer* s, const Vec4& v) -> void {
+    serialize_block_init(s);
     serialize_field(s, "x", v.x);
     serialize_field(s, "y", v.y);
     serialize_field(s, "z", v.z);
@@ -146,6 +154,17 @@ fn deserialize_skip_line(Deserializer* d) -> void {
         while (d->cursor < (s32)d->src.size() && d->src[d->cursor] != '\n') ++d->cursor;
         if (d->cursor < (s32)d->src.size()) ++d->cursor; // consume '\n'
     }
+}
+
+fn deserialize(Deserializer* d, Vec2* v) -> void {
+    deserialize_block_init(d);
+    while (!deserialize_peek_block_done(d)) {
+        std::string_view key = deserialize_read_key(d);
+        if      (key == "x") deserialize_value(d, v->x);
+        else if (key == "y") deserialize_value(d, v->y);
+        else deserialize_skip_line(d); // Unknown field, skip it
+    }
+    deserialize_block_done(d);
 }
 
 fn deserialize(Deserializer* d, Vec3* v) -> void {
