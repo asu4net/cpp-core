@@ -123,3 +123,5 @@ fn _ensuref_function(bool expr, const char* fmt, ...) -> bool;
 #   define checkf(...)
 #   define ensuref(X, ...) (X)
 #endif
+
+#define stringify(_x) #_x

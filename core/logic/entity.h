@@ -19,16 +19,25 @@ enum Entity_Kind : u64 {
 inline fn to_string(Entity_Kind kind) -> const char* {
     switch (kind)
     {
-        #define stringify(_x) #_x
         #define declare_switch_case(_kind) \
             case Entity_Kind_##_kind: return stringify(Entity_Kind_##_kind);
 
             for_entity_kinds(declare_switch_case)
         #undef declare_switch_case
-        #undef stringify
         
         default: return "";
     }
+}
+
+inline fn from_string(std::string_view str, Entity_Kind* pKind) {
+    #define declare_if_case(_kind)                   \
+        if (str == stringify(Entity_Kind_##_kind)) { \
+           *pKind = Entity_Kind_##_kind;             \
+            return;                                  \
+        }
+
+        for_entity_kinds(declare_if_case)
+        #undef declare_if_case
 }
 
 // Forward declarations.
@@ -54,8 +63,7 @@ struct Entity {
 fn serialize_entity_init(Serializer* s, const Entity& e) -> void;
 fn serialize_entity_done(Serializer* s) -> void;
 
-template<>
-fn serialize<Entity>(Serializer* s, const Entity& e) -> void;
+fn serialize(Serializer* s, const Entity& e) -> void;
 
 // @Pending: _Draw_Imgui callback.
 
@@ -115,6 +123,12 @@ fn deserialize_entity_init(Deserializer* d, Entity* e) -> void {
     while (!deserialize_peek_block_done(d)) {
         std::string_view key = deserialize_read_key(d);
         if (key == "enabled") deserialize_value(d, e->enabled);
+        // @Note: Enums are a bit anoying to deserialize.
+        else if (key == "kind") {
+            std::string str_kind;
+            deserialize_value(d, str_kind);
+            from_string(str_kind, &e->kind);
+        }
         else if (key == "pos") deserialize_value(d, e->pos);
         else if (key == "rot") deserialize_value(d, e->rot);
         else if (key == "scl") deserialize_value(d, e->scl);
@@ -128,14 +142,12 @@ inline fn deserialize_entity_done(Deserializer*) -> void {
     // Dummy. We keep it for coherence.
 }
 
-template<>
-fn serialize<Entity>(Serializer* s, const Entity& e) -> void {
+fn serialize(Serializer* s, const Entity& e) -> void {
     serialize_entity_init(s, e);
     serialize_entity_done(s);
 }
 
-template<>
-fn deserialize<Entity>(Deserializer* d, Entity* e) -> void {
+fn deserialize(Deserializer* d, Entity* e) -> void {
     deserialize_entity_init(d, e);
     deserialize_entity_done(d);
 }
@@ -153,11 +165,11 @@ fn world_init() -> void {
     #define set_callbacks(_kind) \
         world->serialize[Entity_Kind_##_kind] = [](Serializer* s, const Entity* e) { \
             const _kind* entity = static_cast<const Entity*>(e); \
-            serialize<_kind>(s, *entity); \
+            serialize(s, *entity); \
         }; \
         world->deserialize[Entity_Kind_##_kind] = [](Deserializer* d, Entity* e) { \
             _kind* entity = static_cast<Entity*>(e); \
-            deserialize<_kind>(d, entity); \
+            deserialize(d, entity); \
         };
 
         for_entity_kinds(set_callbacks)

@@ -6,11 +6,6 @@ struct Serializer {
     s32 indent_level = 0;
 };
 
-template<typename T>
-fn serialize(Serializer*, const T&) -> void {
-    checkf(false, "Unimplemented serialize specification!");
-}
-
 fn serialize_indent(Serializer* s) -> void;
 fn serialize_block_init(Serializer* s) -> void;
 fn serialize_block_done(Serializer* s) -> void;
@@ -33,18 +28,13 @@ fn serialize_field(Serializer* s, std::string_view field, const T& value) -> voi
     s->out += "\n";
 }
 
-template<>
-fn serialize<Vec3>(Serializer* s, const Vec3& v) -> void;
+fn serialize(Serializer* s, const Vec3& v) -> void;
+fn serialize(Serializer* s, const Vec4& v) -> void;
 
 struct Deserializer {
     std::string_view src;
     s32 cursor = 0;
 };
-
-template<typename T>
-fn deserialize(Deserializer*, T*) -> void {
-    checkf(false, "Unimplemented deserialize specification!");
-}
 
 // Core parsing primitives
 fn deserialize_skip_whitespace(Deserializer* d) -> void;
@@ -76,5 +66,5 @@ fn deserialize_value(Deserializer* d, T& value) -> void {
     }
 }
 
-template<>
-fn deserialize<Vec3>(Deserializer* d, Vec3* v) -> void;
+fn deserialize(Deserializer* d, Vec3* v) -> void;
+fn deserialize(Deserializer* d, Vec4* v) -> void;

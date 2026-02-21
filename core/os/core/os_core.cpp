@@ -13,8 +13,8 @@
 #include <direct.h>
 #define PATH_SEPARATOR '\\'
 #else
-#include <unistd.h>
 #include <limits.h>
+#include <unistd.h>    // write, close.
 #define PATH_SEPARATOR '/'
 #endif
 
@@ -117,6 +117,17 @@ fn os_read_entire_file(std::string_view filename) -> std::string {
     return buffer;
 }
 
+fn os_write_entire_file(std::string_view filename, std::string_view content) -> bool {
+    FILE* file = fopen(filename.data(), "wb");
+    if (!file) {
+        return false;
+    }
+    
+    size_t written = fwrite(content.data(), 1, content.size(), file);
+    fclose(file);
+    
+    return written == content.size();
+}
 
 fn os_trim(std::string text) -> std::string {
     std::string s = text;
