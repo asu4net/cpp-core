@@ -2,10 +2,10 @@
 #include "draw.h"
 #include "graphics.h"
 
-#define GAME_ENTITY_IMPL
+#define ENTITY_IMPL
 #include "entity.h"
 
-static fn draw_sprite_entity(Entity* e) {
+static fn draw_sprite_entity(Entity_Base* e) {
     draw_sprite(e->tex, e->cell, e->tint, Mat4::transform(e->pos, e->rot, e->scl));
 }
 
@@ -15,7 +15,7 @@ fn main() -> s32 {
     desc.window.title = L"Survive 2D";
     app_init(desc);
     draw_init();
-    world_init();
+    entity_storage_init();
     
     Texture tex;
     Texture_Def def;
@@ -27,8 +27,8 @@ fn main() -> s32 {
     Entity_Handle hA = entity_create();
     Entity_Handle hB = entity_create();
     
-    Entity* entityA = entity_get(hA);
-    Entity* entityB = entity_get(hB);
+    Entity_Base* entityA = entity_get(hA);
+    Entity_Base* entityB = entity_get(hB);
 
     entityA->tex = &tex;
     entityA->scl = { 3.f, 3.f, 1.f };
@@ -43,7 +43,7 @@ fn main() -> s32 {
 
     Deserializer d;
     d.src = s.out;
-    Entity e;
+    Entity_Base e;
     deserialize(&d, &e);
 
     while(app_running()) {
@@ -54,7 +54,7 @@ fn main() -> s32 {
     }
 
     texture_done(&tex);
-    world_done();
+    entity_storage_done();
     draw_done();
     app_done();
 }
