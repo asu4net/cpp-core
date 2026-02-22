@@ -20,7 +20,7 @@
 enum Entity_Kind : u64 {
     Entity_Kind_None = 0,
     #define DeclareEnumEntry(EntityType) \
-        Entity_Kind_##EntityType,
+        EntityKind(EntityType),
 
         ForEntityTypes(DeclareEnumEntry)
     
