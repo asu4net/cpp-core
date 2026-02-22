@@ -204,8 +204,8 @@ fn entity_destroy(Entity_Handle handle) -> void; // @Pending: Save the entities 
 fn entity_get(Entity_Handle handle) -> Entity*;
 fn entity_pass(void (*update)(Entity*)) -> void;
 
-#define EntityGet(_type, _handle) \
-    (_type*) entity_get(_handle)
+#define EntityGet(EntityType, EntityHandle) \
+    (EntityType*) entity_get(EntityHanle)
 
 #endif
 
