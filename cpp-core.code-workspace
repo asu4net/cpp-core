@@ -15,7 +15,7 @@
         },
 		"tasks": [
 			{
-				"label": "build",
+				"label": "build_survive2d",
 				"type": "shell",
 				"command": "./build.bat",
 				"args": ["survive2d", "debug"],
@@ -23,7 +23,16 @@
 					"kind": "build",
 					"isDefault": true
 				}
-			}
+			},
+			{
+				"label": "build_pong",
+				"type": "shell",
+				"command": "./build.bat",
+				"args": ["pong", "debug"],
+				"group": {
+					"kind": "build",
+				}
+			},
 		]
     },
 	"settings": {
@@ -44,5 +53,25 @@
 			"**/*.user": true,
 			"**/*.exe": true,
 		},
-	}
+	},
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "debug_survive2d",
+                "type": "cppvsdbg",
+                "request": "launch",
+				"preLaunchTask": "build_survive2d",
+				"program": "${workspaceFolder}/.bin/survive2d/debug/survive2d.exe",
+                "cwd": "${workspaceFolder}/games/survive2d/assets",
+            },            {
+                "name": "debug_pong",
+                "type": "cppvsdbg",
+                "request": "launch",
+				"preLaunchTask": "build_pong",
+				"program": "${workspaceFolder}/.bin/pong/debug/pong.exe",
+                "cwd": "${workspaceFolder}/games/pong/assets",
+            },
+        ]
+    }
 }

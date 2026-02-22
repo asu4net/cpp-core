@@ -2,12 +2,6 @@
 #include "draw.h"
 #include "graphics.h"
 
-// TODO 
-// - Sistema para serializar la textura dentro de la entidad
-//      - Decidir si necesitamos un sistema de assets para guardar referencias.
-//      - Guardar sistema de assets para cuando demos modelos.
-
-
 #include "entity.h"
 struct Player {
     Entity base;
