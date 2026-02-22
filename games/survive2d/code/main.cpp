@@ -10,7 +10,7 @@ struct Player {
 #define ENTITY_IMPL
 #include "entity.h"
 
-fn serialize(Serializer* s, const Player& e) -> void {
+fn serialize(Serializer *s, const Player &e) -> void {
     serialize_block_init(s);
     serialize_fields_base_entity(s, e.base);
     serialize_block_done(s);

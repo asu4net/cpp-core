@@ -36,6 +36,8 @@
 		]
     },
 	"settings": {
+		"C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: LLVM, IndentWidth: 4, BreakBeforeBraces: Attach }",
+		"C_Cpp.dimInactiveRegions": false,
 		"files.associations": {
 			"*.rh": "cpp",
 			"xiosbase": "cpp",
