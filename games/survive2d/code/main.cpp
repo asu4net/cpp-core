@@ -2,16 +2,39 @@
 #include "draw.h"
 #include "graphics.h"
 
-#define ENTITY_IMPL
-#include "entity.h"
-
 // TODO 
 // - Sistema para serializar la textura dentro de la entidad
 //      - Decidir si necesitamos un sistema de assets para guardar referencias.
 //      - Guardar sistema de assets para cuando demos modelos.
 
-static fn draw_sprite_entity(Entity_Base* e) {
-    draw_sprite(e->tex, e->sprite, e->tint, Mat4::transform(e->pos, e->rot, e->scl));
+
+#include "entity.h"
+struct Player {
+    Entity base;
+};
+
+#define ENTITY_IMPL
+#include "entity.h"
+
+fn serialize(Serializer* s, const Player& e) -> void {
+    serialize_block_init(s);
+    serialize_fields_base_entity(s, e.base);
+    serialize_block_done(s);
+}
+
+fn deserialize(Deserializer* d, Player* e) -> void {
+    deserialize_block_init(d);
+    while(!deserialize_peek_block_done(d)) {
+        deserialize_fields_base_entity(d, &e->base);
+        //std::string_view key = deserialize_read_key(d);   
+    }
+    deserialize_block_done(d);
+}
+
+fn draw_sprite_entity(Entity* e) {
+    if (e->visible) {
+        draw_sprite(e->tex, e->sprite, e->tint, Mat4::transform(e->pos, e->rot, e->scl));
+    }
 }
 
 fn main() -> s32 {
@@ -29,19 +52,19 @@ fn main() -> s32 {
     def.filename = "sprites/Units/Blue Units/Monk/Run.png";
     texture_init(&tex, def);
 
-    Entity_Handle hA = entity_create();
-    Entity_Handle hB = entity_create();
+    Entity_Handle hA = entity_create(Entity_Kind_Player);
+    Entity_Handle hB = entity_create(Entity_Kind_Player);
     
-    Entity_Base* entityA = entity_get(hA);
-    Entity_Base* entityB = entity_get(hB);
+    Entity* entityA = entity_get(hA);
+    Entity* entityB = entity_get(hB);
 
-    entityA->tex = &tex;
     entityA->scl = { 3.f, 3.f, 1.f };
+    entityA->tex = &tex;
     entityA->sprite = 1;
 
     entityB->pos = Vec3(F32.Right) * 2.f;
-    entityB->tex = &tex;
     entityB->scl = { 3.f, 3.f, 1.f };
+    entityB->tex = &tex;
     entityB->sprite = 1;
 
     Serializer s;
@@ -49,7 +72,7 @@ fn main() -> s32 {
 
     Deserializer d;
     d.src = s.out;
-    Entity_Base e;
+    Player e;
     deserialize(&d, &e);
 
     while(app_running()) {

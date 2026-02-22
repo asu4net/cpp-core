@@ -124,4 +124,4 @@ fn _ensuref_function(bool expr, const char* fmt, ...) -> bool;
 #   define ensuref(X, ...) (X)
 #endif
 
-#define stringify(_x) #_x
+#define Stringify(_x) #_x
